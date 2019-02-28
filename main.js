@@ -30,8 +30,8 @@ let EmailTo = '273714170@qq.com;843313654@qq.com'
 let EmailSubject = '一封来自重庆的邮件'
 
 //每日发送时间
-let EmailHour = 14
-let EmialMinminute = 42
+let EmailHour = 6
+let EmialMinminute = 30
 
 // 爬取数据的url
 const OneUrl = 'http://wufazhuce.com/'
