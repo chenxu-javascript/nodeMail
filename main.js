@@ -30,8 +30,8 @@ let EmailTo = '273714170@qq.com;843313654@qq.com'
 let EmailSubject = '一封来自重庆的邮件'
 
 //每日发送时间
-let EmailHour = 6
-let EmialMinminute = 30
+let EmailHour = 18
+let EmialMinminute = 0
 
 // 爬取数据的url
 const OneUrl = 'http://wufazhuce.com/'
@@ -151,7 +151,9 @@ function sendMail(HtmlData) {
 
   let transporter = nodemailer.createTransport({
     service: EmianService,
-    port: 465,
+    // port: 465,
+    port: 587,
+    secure: false,
     secureConnection: true,
     auth: EamilAuth
   })
