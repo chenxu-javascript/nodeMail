@@ -25,7 +25,7 @@ let EamilAuth = {
 let EmailFrom = '"陈先生" <chenxugemail@gmail.com>'
 
 //接收者邮箱地
-let EmailTo = '843313654@qq.com;928874581@qq.com'
+let EmailTo = '273714170@qq.com;843313654@qq.com'
 //邮件主题
 let EmailSubject = '一封来自重庆的邮件'
 
