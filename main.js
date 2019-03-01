@@ -9,29 +9,31 @@ const schedule = require('node-schedule') //定时器任务库
 
 //纪念日
 let startDay = '2019/2/27'
+let startUnderstandingDay = '2009/09/01'
 // 截止日期
 let deadlineDay = '2019/6/8'
 //当地拼音,需要在下面的墨迹天气url确认
 const local = 'yongxing-county'
 
 //发送者邮箱厂家
-let EmianService = 'gmail'
+let EmianService = 'qq'
 //发送者邮箱账户SMTP授权码
 let EamilAuth = {
-  user: 'chenxugemail@gmail.com',
-  pass: 'tulrcfzksncjljuf'
+  user: 'chenxudaye@qq.com',
+  pass: 'xpdcwbraergfbeeg'
 }
+// tulrcfzksncjljuf
 //发送者昵称与邮箱地址
-let EmailFrom = '"陈先生" <chenxugemail@gmail.com>'
+let EmailFrom = '"陈东升" <chenxudaye@qq.com>'
 
 //接收者邮箱地
-let EmailTo = '273714170@qq.com;843313654@qq.com'
+let EmailTo = '273714170@qq.com'
 //邮件主题
-let EmailSubject = '一封来自重庆的邮件'
+let EmailSubject = '发给魂飞梦萦的人'
 
 //每日发送时间
-let EmailHour = 18
-let EmialMinminute = 0
+let EmailHour = 22
+let EmialMinminute = 22
 
 // 爬取数据的url
 const OneUrl = 'http://wufazhuce.com/'
@@ -134,14 +136,6 @@ function getWeatherData() {
   return p
 }
 
-function getHtml(HtmlData) {
-  const template = ejs.compile(
-    fs.readFileSync(path.resolve(__dirname, 'email.ejs'), 'utf8')
-  )
-  console.log(HtmlData)
-  const html = template(HtmlData)
-  console.log('获取html 成功')
-}
 // 发动邮件
 function sendMail(HtmlData) {
   const template = ejs.compile(
@@ -151,9 +145,9 @@ function sendMail(HtmlData) {
 
   let transporter = nodemailer.createTransport({
     service: EmianService,
-    // port: 465,
-    port: 587,
-    secure: false,
+    port: 465,
+    // port: 587,
+    // secure: false,
     secureConnection: true,
     auth: EamilAuth
   })
@@ -174,6 +168,14 @@ function sendMail(HtmlData) {
   })
 }
 
+function addZero(val) {
+  if (val > 9) {
+    return val
+  } else {
+    return '0' + val
+  }
+}
+
 // 聚合
 function getAllDataAndSendMail() {
   let HtmlData = {}
@@ -181,23 +183,30 @@ function getAllDataAndSendMail() {
   let today = new Date()
   console.log(today)
   let initDay = new Date(deadlineDay)
+  let _startUnderstandingDay = new Date(startUnderstandingDay)
   let deadlineday = Math.floor((initDay - today) / 1000 / 60 / 60 / 24)
+  _startUnderstandingDay = Math.floor(
+    (today - _startUnderstandingDay) / 1000 / 60 / 60 / 24
+  )
   let todaystr =
     today.getFullYear() +
-    ' / ' +
-    (today.getMonth() + 1) +
-    ' / ' +
-    today.getDate()
+    '年' +
+    addZero(today.getMonth() + 1) +
+    '月' +
+    addZero(today.getDate()) +
+    '日'
   HtmlData['deadlineday'] = deadlineday
   HtmlData['todaystr'] = todaystr
+  HtmlData['understandingDay'] = _startUnderstandingDay
 
-  Promise.all([getOneData(), getWeatherTips(), getWeatherData()])
+  return Promise.all([getOneData(), getWeatherTips(), getWeatherData()])
     .then(function(data) {
       HtmlData['todayOneData'] = data[0]
       HtmlData['weatherTip'] = data[1]
       HtmlData['threeDaysData'] = data[2]
       // console.log(HtmlData)
       // getHtml(HtmlData)
+      // return HtmlData
       sendMail(HtmlData)
     })
     .catch(function(err) {
@@ -215,3 +224,5 @@ let j = schedule.scheduleJob(rule, function() {
   console.log('执行任务')
   getAllDataAndSendMail()
 })
+
+exports.getAllDataAndSendMail = getAllDataAndSendMail
